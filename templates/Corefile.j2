@@ -1,0 +1,31 @@
+{% for net_name, net_data in network_views.items() %}
+. {
+    bind {{ bind_ip }}
+    reload 2s
+    
+    view user_{{ net_name }} {
+        expr {% for subnet in net_data.subnets %}incidr(client_ip(), '{{ subnet }}'){% if not loop.last %} || {% endif %}{% endfor %}
+    }
+    
+    hosts /etc/coredns/zones/{{ net_name }}.hosts {
+        fallthrough
+    }
+    
+    forward . 8.8.8.8 1.1.1.1
+    cache 30
+    
+    log
+    errors
+}
+{% endfor %}
+
+. {
+    bind {{ bind_ip }}
+    reload 2s
+    
+    forward . 8.8.8.8 1.1.1.1
+    cache 30
+    
+    log
+    errors
+}

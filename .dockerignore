@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea/
+*venv/
+.vscode/
+__pycache__/
+*.pyc
+dns_backup/
+README.md
+docker-compose.yml
