@@ -2,18 +2,22 @@
 . {
     bind {{ bind_ip }}
     reload 2s
-    
+
     view user_{{ net_name }} {
         expr {% for subnet in net_data.subnets %}incidr(client_ip(), '{{ subnet }}'){% if not loop.last %} || {% endif %}{% endfor %}
     }
-    
+
+    template IN AAAA {
+        rcode NOERROR
+    }
+
     hosts /etc/coredns/zones/{{ net_name }}.hosts {
         fallthrough
     }
-    
+
     forward . 8.8.8.8 1.1.1.1
     cache 30
-    
+
     log
     errors
 }
@@ -22,10 +26,14 @@
 . {
     bind {{ bind_ip }}
     reload 2s
-    
+
+    template IN AAAA {
+        rcode NOERROR
+    }
+
     forward . 8.8.8.8 1.1.1.1
     cache 30
-    
+
     log
     errors
 }
